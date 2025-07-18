@@ -1,31 +1,67 @@
 {
-    "tasks": [
-        {
-            "id": "1",
-            "name": "Comprar pão",
-            "status":"pending",
-            "priority":"normal",
-            "description": "Comprar pão francês na padaria",
-            "createdAt": "2025-07-17T10:00:00Z",
-            "dueDate": "2025-07-18T12:00:00Z"
-        },
-        {
-            "id": "2",
-            "name": "Estudar JavaScript",
-            "status":"pending",
-            "priority":"normal",
-            "description": "Praticar eventos e DOM",
-            "createdAt": "2025-07-15T15:00:00Z",
-            "dueDate": "2025-07-20T18:00:00Z"
-        },
-        {
-            "id": "3",
-            "name": "Fazer exercícios",
-            "status": "pending",
-            "priority":"normal",
-            "description": "30 minutos de caminhada",
-            "createdAt": "2025-07-16T08:30:00Z",
-            "dueDate": "2025-07-17T08:30:00Z"
-        }
-    ]
+  "tasks": [
+    {
+      "id": "1",
+      "name": "Comprar pão",
+      "status": "pending",
+      "priority": "normal",
+      "description": "Comprar pão francês na padaria",
+      "createdAt": "2025-07-17T10:00:00Z",
+      "dueDate": "2025-07-18T12:00:00Z"
+    },
+    {
+      "id": "2",
+      "name": "Estudar JavaScript||Node",
+      "status": "done",
+      "priority": "high",
+      "description": "bla la",
+      "createdAt": "2025-07-15T15:00:00Z",
+      "dueDate": "2026-12-20T18:00:00Z"
+    },
+    {
+      "id": "3",
+      "name": "Fazer exercícios",
+      "status": "pending",
+      "priority": "normal",
+      "description": "30 minutos de caminhada",
+      "createdAt": "2025-07-16T08:30:00Z",
+      "dueDate": "2025-07-17T08:30:00Z"
+    },
+    {
+      "id": "92cbf858-3eee-4157-a28d-6ec5c638729d",
+      "name": "primeira tarefa",
+      "status": "pending",
+      "priority": "normal",
+      "description": "Não passei,status,prioiridade,nem data de vencimernto",
+      "createdAt": "2025-07-18T17:30:43.816Z",
+      "dueDate": "indeterminate"
+    },
+    {
+      "id": "f4ada24f-bf06-4fac-b2f7-3eede48cdfff",
+      "name": "segunda tarefa",
+      "status": "pending",
+      "priority": "low",
+      "description": "passei,prioiridade,e data de vencimernto",
+      "createdAt": "2025-07-18T17:34:54.863Z",
+      "dueDate": "2025-07-20T18:00:00Z"
+    },
+    {
+      "id": "ef8d31d9-d4a4-4c74-8bf1-887ed97a4579",
+      "name": "segunda tarefa",
+      "status": "pending",
+      "priority": "low",
+      "description": "passei,prioiridade,e data de vencimernto",
+      "createdAt": "2025-07-18T17:35:31.094Z",
+      "dueDate": "2025-07-20T18:00:00Z"
+    },
+    {
+      "id": "dab76da6-0540-44d2-aed9-0776171bf2c0",
+      "name": "primeira tarefa após terminar",
+      "status": "pending",
+      "priority": "normal",
+      "description": "Não xxxxxxxxxxxxxxxxxxata de vencimernto",
+      "createdAt": "2025-07-18T19:32:30.607Z",
+      "dueDate": "indeterminate"
+    }
+  ]
 }
