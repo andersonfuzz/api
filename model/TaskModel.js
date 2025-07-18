@@ -1,23 +1,26 @@
-import { uuid as uuidv4 } from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
 export default class TaskModel {
-    id = '';
-    name = '';
-    status = 'pending';
-    priority = 'normal'
-    description = '';
-    createdAt = '';
-    dueDate = '';
-    constructor(
+    
+    constructor({
+        id = uuidv4(),
         name,
-        status,
-        priority,
-        description,
-        createdAt,
-        dueDate
+        description = "",
+        status = "pending",
+        priority = "normal",
+        createdAt = new Date().toISOString(),
+        dueDate = null,
+        }
     ) {
-        this.id=uuidv4()
-        this.name=name
-        this.status='pending'
-        this.priority=priority
+        this.id = id;
+        if (!name) {
+            throw new Error("Task name is required");
+        }
+        this.name =name;
+        this.status = status;
+        this.priority = priority;;
+        this.description=description;
+        this.createdAt = createdAt;
+        this.dueDate = dueDate;
+
     }
 }
