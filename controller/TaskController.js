@@ -1,4 +1,5 @@
 import TaskRepository from '../repository/TaskRepository.js';
+import TaskModel from '../model/TaskModel.js';
 export default class TaskController {
 
     static async getAllTasks(req, res) {
@@ -28,31 +29,33 @@ export default class TaskController {
     }
 
     static async createTask(req, res) {
-        try {
-            const taskData = req.body;
-            const newTask = await TaskRepository.create(taskData);
-            res.status(201).json(newTask)
-        } catch (err) {
-            console.error(err);
-            res.status(400).json({ message: err.message })
-        }
-    }
-    static async editTask(req, res) {
     try {
-        const { id } = req.params;
-        const updatedData = req.body;
-        const updatedTask = await TaskRepository.update(id, updatedData);
+        const taskData = req.body;
 
-        if (!updatedTask) {
-            return res.status(404).json({ message: 'Task not found' });
-        }
+        const savedTask = await TaskRepository.create(taskData);
 
-        res.status(200).json(updatedTask);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal server error' });
+        res.status(201).json(savedTask);
+    } catch (err) {
+        console.error(err);
+        res.status(400).json({ message: err.message });
     }
 }
+    static async editTask(req, res) {
+        try {
+            const { id } = req.params;
+            const updatedData = req.body;
+            const updatedTask = await TaskRepository.update(id, updatedData);
+
+            if (!updatedTask) {
+                return res.status(404).json({ message: 'Task not found' });
+            }
+
+            res.status(200).json(updatedTask);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ message: 'Internal server error' });
+        }
+    }
 
     static async deleteTask(req, res) {
         try {

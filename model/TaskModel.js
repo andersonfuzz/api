@@ -28,7 +28,7 @@ export default class TaskModel {
         this.priority = priority;
         this.description = description;
         this.createdAt = createdAt;
-        this.dueDate = dueDate;
+        this.dueDate = dueDate ?? 'indeterminate';
 
     }
     markAsDone() {

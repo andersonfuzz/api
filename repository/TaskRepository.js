@@ -1,56 +1,109 @@
+import pool from '../db.js';
 import TaskModel from '../model/TaskModel.js';
-import fs from 'fs/promises';
-const DB_PATH = './db.json';
-
 
 class TaskRepository {
     static async findAll() {
-        const fileContent = await fs.readFile(DB_PATH, 'utf-8');
-        const json = JSON.parse(fileContent);
-        const tasks = json.tasks.map(task => new TaskModel(task));
-        return tasks;
+        const result = await pool.query('SELECT * FROM tasks');
+        return result.rows.map(row => new TaskModel({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            status: row.status,
+            priority: row.priority,
+            createdAt: row.created_at,
+            dueDate: row.due_date
+        }));
     }
+
     static async findById(id) {
-        const fileContent = await fs.readFile(DB_PATH, 'utf-8');
-        const json = JSON.parse(fileContent);
-        const task = json.tasks.find(t => t.id === id);
-        if (!task) return null;
-        return new TaskModel(task);
+        const result = await pool.query('SELECT * FROM tasks WHERE id = $1', [id]);
+        if (result.rows.length === 0) return null;
+
+        const row = result.rows[0];
+        return new TaskModel({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            status: row.status,
+            priority: row.priority,
+            createdAt: row.created_at,
+            dueDate: row.due_date
+        });
     }
 
     static async create(taskData) {
-        const fileContent = await fs.readFile(DB_PATH, 'utf-8');
-        const json = JSON.parse(fileContent);
+        const task = new TaskModel(taskData);
 
-        const newTask = new TaskModel(taskData);
-        json.tasks.push(newTask);
-        await fs.writeFile(DB_PATH, JSON.stringify(json, null, 2), 'utf-8');
-        return newTask;
+        const query = `
+            INSERT INTO tasks (id, name, description, status, priority, created_at, due_date)
+            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            RETURNING *
+        `;
+
+        const values = [
+            task.id,
+            task.name,
+            task.description,
+            task.status,
+            task.priority,
+            task.createdAt,
+            task.dueDate === 'indeterminate' ? null : task.dueDate
+        ];
+
+        const result = await pool.query(query, values);
+
+        const row = result.rows[0];
+        return new TaskModel({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            status: row.status,
+            priority: row.priority,
+            createdAt: row.created_at,
+            dueDate: row.due_date
+        });
     }
 
     static async update(id, updatedData) {
-        const fileContent = await fs.readFile(DB_PATH, 'utf-8');
-        const json = JSON.parse(fileContent);
-        const index = json.tasks.findIndex(t => t.id === id);
-        if (index === -1) return null;
+        const columns = [];
+        const values = [];
+        let index = 1;
 
-        json.tasks[index] = { ...json.tasks[index], ...updatedData };
+        for (const [key, value] of Object.entries(updatedData)) {
+            columns.push(`${key} = $${index}`);
+            values.push(value);
+            index++;
+        }
 
-        await fs.writeFile(DB_PATH, JSON.stringify(json, null, 2), 'utf-8');
-        return new TaskModel(json.tasks[index]);
+        values.push(id);
+
+        const query = `
+            UPDATE tasks
+            SET ${columns.join(', ')}
+            WHERE id = $${index}
+            RETURNING *
+        `;
+
+        const result = await pool.query(query, values);
+
+        if (result.rows.length === 0) return null;
+
+        const row = result.rows[0];
+        return new TaskModel({
+            id: row.id,
+            name: row.name,
+            description: row.description,
+            status: row.status,
+            priority: row.priority,
+            createdAt: row.created_at,
+            dueDate: row.due_date
+        });
     }
 
     static async delete(id) {
-        const fileContent = await fs.readFile(DB_PATH, 'utf-8');
-        const json = JSON.parse(fileContent);
-        const index = json.tasks.findIndex(t => t.id === id);
-        if (index === -1) return false;
-
-        json.tasks.splice(index, 1);
-        await fs.writeFile(DB_PATH, JSON.stringify(json, null, 2), 'utf-8');
-        return true;
+        const result = await pool.query('DELETE FROM tasks WHERE id = $1', [id]);
+        return result.rowCount > 0;
     }
-
 }
 
 export default TaskRepository;

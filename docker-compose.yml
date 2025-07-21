@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: postgres_tasksdb
+    restart: always
+    environment:
+      POSTGRES_USER: andersonfuzz
+      POSTGRES_PASSWORD: An@1haunted0
+      POSTGRES_DB: tasksdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
