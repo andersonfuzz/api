@@ -65,39 +65,60 @@ class TaskRepository {
     }
 
     static async update(id, updatedData) {
-        const columns = [];
-        const values = [];
-        let index = 1;
+        const result = await pool.query(`SELECT * FROM tasks WHERE id = $1`, [id]);
+    const row = result.rows[0];
 
-        for (const [key, value] of Object.entries(updatedData)) {
-            columns.push(`${key} = $${index}`);
-            values.push(value);
-            index++;
-        }
+    if (!row) return null;
 
-        values.push(id);
+    const existingTask = new TaskModel({
+        id: row.id,
+        name: row.name,
+        description: row.description,
+        status: row.status,
+        priority: row.priority,
+        createdAt: row.created_at,
+        dueDate: row.due_date ?? 'indeterminate'
+    });
 
-        const query = `
-            UPDATE tasks
-            SET ${columns.join(', ')}
-            WHERE id = $${index}
-            RETURNING *
-        `;
+    const updatedTask = new TaskModel({
+        ...existingTask,
+        ...updatedData
+    });
 
-        const result = await pool.query(query, values);
+    const query = `
+        UPDATE tasks
+        SET name = $1,
+            description = $2,
+            status = $3,
+            priority = $4,
+            due_date = $5
+        WHERE id = $6
+        RETURNING *
+    `;
 
-        if (result.rows.length === 0) return null;
+    const values = [
+        updatedTask.name,
+        updatedTask.description,
+        updatedTask.status,
+        updatedTask.priority,
+        updatedTask.dueDate === 'indeterminate' ? null : updatedTask.dueDate,
+        id
+    ];
 
-        const row = result.rows[0];
-        return new TaskModel({
-            id: row.id,
-            name: row.name,
-            description: row.description,
-            status: row.status,
-            priority: row.priority,
-            createdAt: row.created_at,
-            dueDate: row.due_date
-        });
+    const updatedResult = await pool.query(query, values);
+
+    const updatedRow = updatedResult.rows[0];
+
+    // Retorna a nova instância da Task já atualizada
+    return new TaskModel({
+        id: updatedRow.id,
+        name: updatedRow.name,
+        description: updatedRow.description,
+        status: updatedRow.status,
+        priority: updatedRow.priority,
+        createdAt: updatedRow.created_at,
+        dueDate: updatedRow.due_date ?? 'indeterminate'
+    });
     }
 
     static async delete(id) {
