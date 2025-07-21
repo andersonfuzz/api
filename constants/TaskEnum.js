@@ -5,7 +5,7 @@ const TaskStatus = Object.freeze({
 const TaskPriority = Object.freeze({
     LOW: "low",
     NORMAL: "normal",
-    HIGH: "higt"
+    HIGH: "high"
 })
 
 export {
