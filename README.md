@@ -1,41 +1,99 @@
-app
-router
-controller
-Repository-Lida com o banco
-Model
-Db
-###Nome do arquivo docker-compose.yml
+📋 API Tasks
 
-###Conteudo do compos:
-version: '3.8'
+API REST para gerenciamento de tarefas.
+🚀 Base URL
 
-services:
-  db:
-    image: postgres:15
-    container_name: postgres_tasksdb
-    restart: always
-    environment:
-      POSTGRES_USER: andersonfuzz
-      POSTGRES_PASSWORD: An@1haunted0
-      POSTGRES_DB: tasksdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+http://localhost:4000/tasks
+📚 Endpoints
+✅ Listar todas as tarefas
 
-volumes:
-  pgdata:
+    GET /tasks
 
-###Subir banco
-docker compose up -d
+Retorna todas as tarefas cadastradas.
+🔍 Buscar tarefa por ID
 
-###Teste a conexão
-docker exec -it postgres_tasksdb psql -U andersonfuzz -d tasksdb
+    GET /tasks/:id
 
-###Quando terminar, você pode checar se a tabela existe com:
-\d tasks
-###E para listar as tarefas atuais (deve estar vazia por enquanto):
-SELECT * FROM tasks;
+Retorna a tarefa correspondente ao ID.
 
-###Instalar driver Postgres no Node.js
-npm install pg
+Exemplo de resposta:
+
+{
+  "id": "uuid",
+  "name": "Comprar pão",
+  "description": "Padaria",
+  "status": "pending",
+  "priority": "normal",
+  "createdAt": "2025-07-17T10:00:00Z",
+  "dueDate": "indeterminate"
+}
+
+📝 Criar uma nova tarefa
+
+    POST /tasks
+
+Corpo da requisição:
+
+{
+  "name": "Estudar Node.js",
+  "description": "Aprender Express e PostgreSQL",
+  "status": "pending",
+  "priority": "high",
+  "dueDate": "2025-07-25T12:00:00Z"
+}
+
+Valores possíveis:
+
+    status: "pending" ou "done" (padrão: "pending")
+
+    priority: "low", "normal", "high" (padrão: "normal")
+
+    dueDate: ISO 8601 ou "indeterminate" (padrão: "indeterminate")
+
+🔄 Editar uma tarefa
+
+    PUT /tasks/:id
+
+Atualiza campos parciais da tarefa.
+
+Exemplo:
+
+{
+  "name": "Novo nome",
+  "priority": "low",
+  "dueDate": "indeterminate"
+}
+
+🗑️ Deletar uma tarefa
+
+    DELETE /tasks/:id
+
+Remove a tarefa do sistema.
+🖋️ Notas para front-end
+
+    IDs são UUID.
+
+    Datas devem estar em ISO 8601 UTC: "2025-07-21T13:25:20.570Z".
+
+    Campos obrigatórios no create: name.
+
+    createdAt é gerado automaticamente.
+
+🧪 Exemplo com fetch
+
+fetch('http://localhost:4000/tasks', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    name: 'Estudar React',
+    priority: 'high',
+    dueDate: 'indeterminate'
+  })
+})
+  .then(res => res.json())
+  .then(console.log)
+  .catch(console.error);
+
+👨‍💻 Contribuindo
+
+Sinta-se à vontade para abrir uma issue com dúvidas ou sugestões.
